@@ -1,0 +1,112 @@
+<html>
+<head>
+<style>
+body {
+	margin: 0;
+}
+
+.gauge {
+	display: inline-block;
+	background: green;
+	width: 0px;
+	height: 1.2em;
+	/*
+	-webkit-transition: width .3s ease;
+	transition: width .3s ease;
+	*/
+}
+
+.meter {
+	background: black;
+}
+
+#scale span {
+	position: absolute;
+	color: white;
+}
+</style>
+</head>
+<body>
+<div id="scale">
+  <span>0</span><span>-5</span><span>-10</span><span>-15</span><span>-20</span>
+  <span>-25</span><span>-30</span><span>-40</span><span>-50</span><span>-60</span>
+</div>
+<div class="meter"><span class="gauge"></span></div>
+</body>
+<script>
+function get_appropriate_ws_url()
+{
+	var pcol;
+	var u = document.URL;
+
+	/*
+	 * We open the websocket encrypted if this page came on an
+	 * https:// url itself, otherwise unencrypted
+	 */
+
+	if (u.substring(0, 5) == "https") {
+		pcol = "wss://";
+		u = u.substr(8);
+	} else {
+		pcol = "ws://";
+		if (u.substring(0, 4) == "http")
+			u = u.substr(7);
+	}
+
+	u = u.split('/');
+
+	return pcol + u[0];
+}
+
+
+function iec_scale(db) {
+	var def = 0.0;
+	
+	if (db < -70.0 || isNaN(db)) {
+		def = 0.0;
+	} else if (db < -60.0) {
+		def = (db + 70.0) * 0.25;
+	} else if (db < -50.0) {
+		def = (db + 60.0) * 0.5 + 2.5;
+	} else if (db < -40.0) {
+		def = (db + 50.0) * 0.75 + 7.5;
+	} else if (db < -30.0) {
+		def = (db + 40.0) * 1.5 + 15.0;
+	} else if (db < -20.0) {
+		def = (db + 30.0) * 2.0 + 30.0;
+	} else if (db < 0.0) {
+		def = (db + 20.0) * 2.5 + 50.0;
+	} else {
+		def = 100.0;
+	}
+	
+	return (def / 100.0);
+
+}
+
+scale = document.getElementById('scale');
+var i;
+for (i=0; i<scale.children.length; i++) {
+	var span = scale.children[i];
+	span.style.left = iec_scale(parseFloat(span.textContent)) * 100 + '%';
+}
+
+var ws = new WebSocket(get_appropriate_ws_url(), 'jack-wsmeter-protocol');
+ws.onmessage = function(event) {
+	var peaks = event.data.split(" ").slice(0, -1);
+	var gauges = document.getElementsByClassName('gauge');
+	var meters = document.getElementsByClassName('meter');
+	if (meters.length != peaks.length) {
+		for (i=meters.length; i>1; i--) {
+			meters[i-1].remove();
+		}
+		for (i=1; i<peaks.length; i++) {
+			document.body.appendChild(meters[0].cloneNode(true));
+		}
+	}
+	for (i=0; i<peaks.length; i++) {
+		gauges[i].style.width = iec_scale(parseFloat(peaks[i])) * 100 + '%';
+	}
+}
+</script>
+</html>
