@@ -379,7 +379,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	opts = 1;
+	opts = optind;
 	num_meters = 0;
 	while (argv[opts]) {
 		char in_name[255];
