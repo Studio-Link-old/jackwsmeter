@@ -432,8 +432,8 @@ int main(int argc, char **argv)
 
 		/*
 		 * This provokes the LWS_CALLBACK_SERVER_WRITEABLE for every
-		 * live websocket connection using the DUMB_INCREMENT protocol,
-		 * as soon as it can take more packets (usually immediately)
+		 * live websocket connection as soon as it can take more packets
+		 * (usually immediately)
 		 */
 
 		if (((unsigned int)tv.tv_usec - oldus) > 100000) {
