@@ -405,6 +405,11 @@ int main(int argc, char **argv)
 		opts++;
 	}
 
+	if (num_meters == 0) {
+		lwsl_err("You must specify at least one port, aborting.");
+		exit(1);
+	}
+
 	context = libwebsocket_create_context(&info);
 	if (context == NULL) {
 		lwsl_err("libwebsocket init failed\n");
