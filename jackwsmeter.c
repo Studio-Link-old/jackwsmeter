@@ -408,6 +408,10 @@ int main(int argc, char **argv)
 			}
 		}
 		num_meters += 1;
+		if (num_meters == MAX_METERS) {
+			lwsl_err("maximum number of meters (%d) reached.\n", MAX_METERS);
+			break;
+		}
 		opts++;
 	}
 
