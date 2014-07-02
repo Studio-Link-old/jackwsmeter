@@ -135,10 +135,9 @@ callback_meter(struct libwebsocket_context *context,
 	int n;
 	int i;
 	float db;
-	unsigned char one_peak[100];
-	unsigned char buf[LWS_SEND_BUFFER_PRE_PADDING + 512 +
-						  LWS_SEND_BUFFER_POST_PADDING];
-	unsigned char *p = &buf[LWS_SEND_BUFFER_PRE_PADDING];
+	char one_peak[100];
+	char buf[LWS_SEND_BUFFER_PRE_PADDING + 512 + LWS_SEND_BUFFER_POST_PADDING];
+	char *p = &buf[LWS_SEND_BUFFER_PRE_PADDING];
 
 	switch (reason) {
 
@@ -153,7 +152,7 @@ callback_meter(struct libwebsocket_context *context,
 			strcat((char*)p, one_peak);
 		}
 		n = strlen(p) + 1;
-		n = libwebsocket_write(wsi, p, n, LWS_WRITE_TEXT);
+		n = libwebsocket_write(wsi, (unsigned char*)p, n, LWS_WRITE_TEXT);
 		if (n < 0) {
 			lwsl_err("ERROR %d writing to socket\n", n);
 			return 1;
@@ -210,11 +209,10 @@ static struct option options[] = {
    Stores value of peak sample */
 static int process_peak(jack_nframes_t nframes, void *arg)
 {
-	jack_default_audio_sample_t *in;
 	unsigned int i, port;
 
 	for (port = 0; port < num_meters; port++) {
-		jack_default_audio_sample_t *in, *out;
+		jack_default_audio_sample_t *in;
 
 		/* just incase the port isn't registered yet */
 		if (input_ports[port] == 0) {
