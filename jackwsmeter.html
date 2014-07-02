@@ -24,6 +24,8 @@ body {
 #scale span {
 	position: absolute;
 	color: white;
+	border-right: 1px solid white;
+	padding-right: 1ex;
 }
 </style>
 </head>
@@ -89,7 +91,7 @@ scale = document.getElementById('scale');
 var i;
 for (i=0; i<scale.children.length; i++) {
 	var span = scale.children[i];
-	span.style.left = iec_scale(parseFloat(span.textContent)) * 100 + '%';
+	span.style.right = (100 - (iec_scale(parseFloat(span.textContent)) * 100)) + '%';
 }
 
 var ws = new WebSocket(get_appropriate_ws_url(), 'jack-wsmeter-protocol');
