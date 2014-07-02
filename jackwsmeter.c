@@ -237,15 +237,15 @@ static int process_peak(jack_nframes_t nframes, void *arg)
 static void cleanup()
 {
 	const char **all_ports;
-	unsigned int i;
+	unsigned int i, j;
 
 	lwsl_debug("cleanup()\n");
 
 	for (i=0; i<num_meters; i++) {
 		all_ports = jack_port_get_all_connections(client, input_ports[i]);
 
-		for (i=0; all_ports && all_ports[i]; i++) {
-			jack_disconnect(client, all_ports[i], jack_port_name(input_ports[i]));
+		for (j=0; all_ports && all_ports[j]; j++) {
+			jack_disconnect(client, all_ports[j], jack_port_name(input_ports[i]));
 		}
 	}
 
