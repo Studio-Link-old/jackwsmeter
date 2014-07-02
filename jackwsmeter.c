@@ -253,6 +253,8 @@ static void cleanup()
 
 	/* Leave the jack graph */
 	jack_client_close(client);
+
+	closelog();
 }
 
 
@@ -452,9 +454,7 @@ int main(int argc, char **argv)
 done:
 	libwebsocket_context_destroy(context);
 
-	lwsl_notice("libwebsockets-test-server exited cleanly\n");
-
-	closelog();
+	lwsl_notice("jackwsserver exited cleanly\n");
 
 	return 0;
 }
