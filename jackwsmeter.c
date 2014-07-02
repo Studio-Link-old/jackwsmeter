@@ -315,11 +315,11 @@ int main(int argc, char **argv)
 
 #if !defined(LWS_NO_DAEMONIZE)
 	/* 
-	 * normally lock path would be /var/lock/lwsts or similar, to
+	 * normally lock path would be /var/lock/jwsm or similar, to
 	 * simplify getting started without having to take care about
-	 * permissions or running as root, set to /tmp/.lwsts-lock
+	 * permissions or running as root, set to /tmp/.jwsm-lock
 	 */
-	if (daemonize && lws_daemonize("/tmp/.lwsts-lock")) {
+	if (daemonize && lws_daemonize("/tmp/.jwsm-lock")) {
 		fprintf(stderr, "Failed to daemonize\n");
 		return 1;
 	}
@@ -329,14 +329,10 @@ int main(int argc, char **argv)
 
 	/* we will only try to log things according to our debug_level */
 	setlogmask(LOG_UPTO (LOG_DEBUG));
-	openlog("lwsts", syslog_options, LOG_DAEMON);
+	openlog("jackwsmeter", syslog_options, LOG_DAEMON);
 
 	/* tell the library what debug level to emit and to send it to syslog */
 	lws_set_log_level(debug_level, lwsl_emit_syslog);
-
-	lwsl_notice("libwebsockets test server - "
-			"(C) Copyright 2010-2013 Andy Green <andy@warmcat.com> - "
-						    "licensed under LGPL2.1\n");
 
 	max_poll_elements = getdtablesize();
 	pollfds = malloc(max_poll_elements * sizeof (struct pollfd));
