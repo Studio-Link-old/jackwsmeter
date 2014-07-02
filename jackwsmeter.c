@@ -385,7 +385,7 @@ int main(int argc, char **argv)
 		char in_name[255];
 		jack_port_t *port;
 		// Create our input port
-		snprintf(in_name, 255, "wsmeter_%d", num_meters);
+		snprintf(in_name, 255, "in_%d", num_meters);
 		if (!(input_ports[num_meters] = jack_port_register(client, in_name,
 						JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
 			lwsl_err("Cannot register input port '%s'.\n", in_name);
