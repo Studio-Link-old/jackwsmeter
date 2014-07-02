@@ -239,7 +239,7 @@ static void cleanup()
 	const char **all_ports;
 	unsigned int i;
 
-	fprintf(stderr,"cleanup()\n");
+	lwsl_debug("cleanup()\n");
 
 	for (i=0; i<num_meters; i++) {
 		all_ports = jack_port_get_all_connections(client, input_ports[i]);
@@ -362,10 +362,10 @@ int main(int argc, char **argv)
 
 	// Register with Jack
 	if ((client = jack_client_open("wsmeter", JackNullOption, &status)) == 0) {
-		fprintf(stderr, "Failed to start jack client: %d\n", status);
+		lwsl_err("Failed to start jack client: %d\n", status);
 		exit(1);
 	}
-	fprintf(stderr,"Registering as '%s'.\n", jack_get_client_name( client ) );
+	lwsl_debug("Registering as '%s'.\n", jack_get_client_name( client ) );
 
 	// Register the cleanup function to be called when program exits
 	atexit( cleanup );
@@ -375,7 +375,7 @@ int main(int argc, char **argv)
 
 
 	if (jack_activate(client)) {
-		fprintf(stderr, "Cannot activate client.\n");
+		lwsl_err("Cannot activate client.\n");
 		exit(1);
 	}
 
@@ -388,17 +388,18 @@ int main(int argc, char **argv)
 		snprintf(in_name, 255, "wsmeter_%d", num_meters);
 		if (!(input_ports[num_meters] = jack_port_register(client, in_name,
 						JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
-			fprintf(stderr, "Cannot register input port 'meter'.\n");
+			lwsl_err("Cannot register input port '%s'.\n", in_name);
 			exit(1);
 		}
 
 		port = jack_port_by_name(client, argv[opts]);
 		if (port == NULL) {
-			fprintf(stderr, "Can't find port '%s'\n", argv[opts]);
-		}
-		if (jack_connect(client, jack_port_name(port), jack_port_name(input_ports[num_meters]))) {
-			/* failed to connect, pass */
-			fprintf(stderr, "failed to connect\n");
+			lwsl_err("Can't find port '%s'\n", argv[opts]);
+		} else {
+			if (jack_connect(client, jack_port_name(port), jack_port_name(input_ports[num_meters]))) {
+				lwsl_err("failed to connect to port '%s'\n", argv[opts]);
+				exit(1);
+			}
 		}
 		num_meters += 1;
 		opts++;
