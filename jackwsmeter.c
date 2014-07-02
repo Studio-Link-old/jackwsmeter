@@ -51,7 +51,7 @@ int num_meters = 0;
 
 int force_exit = 0;
 
-#define MAX_METERS 10
+#define MAX_METERS 20
 
 float bias = 1.0f;
 float peaks[MAX_METERS];
