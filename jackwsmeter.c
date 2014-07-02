@@ -306,9 +306,9 @@ int main(int argc, char **argv)
 			iface = interface_name;
 			break;
 		case 'h':
-			fprintf(stderr, "Usage: test-server "
+			fprintf(stderr, "Usage: jackwsserver "
 					"[--port=<p>] [--ssl] "
-					"[-d <log bitfield>]\n");
+					"[-d <log bitfield>] <port>+\n");
 			exit(1);
 		}
 	}
