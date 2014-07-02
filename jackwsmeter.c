@@ -371,10 +371,10 @@ int main(int argc, char **argv)
 		lwsl_err("Failed to start jack client: %d\n", status);
 		exit(1);
 	}
-	lwsl_debug("Registering as '%s'.\n", jack_get_client_name( client ) );
+	lwsl_debug("Registering as '%s'.\n", jack_get_client_name(client));
 
 	// Register the cleanup function to be called when program exits
-	atexit( cleanup );
+	atexit(cleanup);
 
 	// Register the peak signal callback
 	jack_set_process_callback(client, process_peak, 0);
