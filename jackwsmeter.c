@@ -201,6 +201,7 @@ static struct option options[] = {
 #ifndef LWS_NO_DAEMONIZE
 	{ "daemonize", 	no_argument,		NULL, 'D' },
 #endif
+	{ "name",	required_argument,	NULL, 'n' },
 	{ NULL, 0, 0, 0 }
 };
 
@@ -263,6 +264,7 @@ int main(int argc, char **argv)
 	struct libwebsocket_context *context;
 	int opts = 0;
 	char interface_name[128] = "";
+	char jack_name[128] = "wsmeter";
 	const char *iface = NULL;
 #ifndef WIN32
 	int syslog_options = LOG_PID | LOG_PERROR;
@@ -281,7 +283,7 @@ int main(int argc, char **argv)
 	info.port = 7681;
 
 	while (n >= 0) {
-		n = getopt_long(argc, argv, "ci:hsp:d:D", options, NULL);
+		n = getopt_long(argc, argv, "ci:hsp:d:Dn:", options, NULL);
 		if (n < 0)
 			continue;
 		switch (n) {
@@ -304,6 +306,10 @@ int main(int argc, char **argv)
 			strncpy(interface_name, optarg, sizeof interface_name);
 			interface_name[(sizeof interface_name) - 1] = '\0';
 			iface = interface_name;
+			break;
+		case 'n':
+			strncpy(jack_name, optarg, sizeof jack_name);
+			jack_name[(sizeof jack_name) - 1] = '\0';
 			break;
 		case 'h':
 			fprintf(stderr, "Usage: jackwsserver "
@@ -361,7 +367,7 @@ int main(int argc, char **argv)
 	info.options = opts;
 
 	// Register with Jack
-	if ((client = jack_client_open("wsmeter", JackNullOption, &status)) == 0) {
+	if ((client = jack_client_open(jack_name, JackNullOption, &status)) == 0) {
 		lwsl_err("Failed to start jack client: %d\n", status);
 		exit(1);
 	}
