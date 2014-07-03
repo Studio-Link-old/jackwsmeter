@@ -266,9 +266,7 @@ int main(int argc, char **argv)
 	char interface_name[128] = "";
 	char jack_name[128] = "wsmeter";
 	const char *iface = NULL;
-#ifndef WIN32
 	int syslog_options = LOG_PID | LOG_PERROR;
-#endif
 	unsigned int oldus = 0;
 	struct lws_context_creation_info info;
 
