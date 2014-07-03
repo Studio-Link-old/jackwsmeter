@@ -78,11 +78,22 @@ static int callback_http(struct libwebsocket_context *context,
 {
 	int m;
 	int fd = (int)(long)user;
+	char *html_filepath;
 
 	switch (reason) {
 	case LWS_CALLBACK_HTTP:
-		if (libwebsockets_serve_http_file(context, wsi, "jackwsmeter.html", "text/html"))
+		html_filepath = malloc(strlen(DATADIR "/jackwsmeter.html") + 1);
+		strcpy(html_filepath, DATADIR "jackwsmeter.html\n\n");
+		if (access(html_filepath, F_OK) != 0) {
+			/* it doesn't exist in the system directory, fall back
+			 * on the current directory. */
+			strcpy(html_filepath, "jackwsmeter.html");
+		}
+		if (libwebsockets_serve_http_file(context, wsi, html_filepath, "text/html")) {
+			free(html_filepath);
 			return 1; /* through completion or error, close the socket */
+		}
+		free(html_filepath);
 
 		break;
 
