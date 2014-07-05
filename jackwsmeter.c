@@ -209,7 +209,6 @@ static struct option options[] = {
 	{ "ssl-cert",	required_argument,	NULL, 'E' },
 	{ "ssl-key",	required_argument,	NULL, 'k' },
 	{ "interface",  required_argument,	NULL, 'i' },
-	{ "closetest",  no_argument,		NULL, 'c' },
 #ifndef LWS_NO_DAEMONIZE
 	{ "daemonize", 	no_argument,		NULL, 'D' },
 #endif
