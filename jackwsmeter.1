@@ -1,0 +1,54 @@
+.TH jackwsmeter "1" 0.5 "July 2014"
+.SH NAME
+jackwsmeter \- jack meter over websockets
+.SH SYNOPSYS
+.B jackswmeter
+.RI [ options ]
+.RI portname
+.RI [ portname ]
+.RI [ portname ]
+.RI ...
+.br
+.SH DESCRIPTION
+\fBjackwsmeter\fR get the signal values of the audio signals that flow
+through JACK ports and make the peak levels available over a websocket
+link.
+
+.SH OPTIONS
+jackwsmeter supports up to 20 input ports, they may be created connected
+to existing output ports, or unconnected if invalid port names are given.
+
+A summary of options is included below.
+
+.TP
+.B \-p, \-\-port=PORT
+.br
+Use PORT as the HTTP/Websocket port, instead of the default 7681
+.TP
+.B \-i, \-\-interface=INTERFACE
+Bind to the specified interface
+.TP
+.B \-\-ssl-cert=FILEPATH, --ssl-private-key=FILEPATH
+Use the specified certificate and private key to secure the connection
+.TP
+.B \-d, \-\-daemonize
+Daemonize the process
+.TP
+.B \-n, \-\-name=NAME
+Register as a jack client with the specified NAME, instead of the default jackswmeter
+
+.SH EXAMPLE
+.PP
+Start in foreground connected to two exiting output ports, open your browser
+at http://localhost:7681 afterwards.
+.IP
+\fBjackwsmeter\fR system:capture_1 system:capture_2
+
+.SH SEE ALSO
+.BR jackd (1),
+.BR jackmeter (1),
+.BR meterbridge (1)
+.br
+
+.SH AUTHOR
+Frederic Peters <fpeters@0d.be>

@@ -7,5 +7,6 @@ jackwsmeter_LDADD = $(JACK_LIBS) $(WEBSOCKETS_LIBS) $(LIBM)
 htmldir = $(datadir)/jackswmeter
 html_DATA = jackwsmeter.html
 
+man_MANS = jackwsmeter.1
 
-EXTRA_DIST = $(html_DATA) AUTHORS README
+EXTRA_DIST = $(html_DATA) $(man_MANS) AUTHORS README
