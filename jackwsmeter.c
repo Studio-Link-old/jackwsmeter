@@ -206,7 +206,8 @@ static struct option options[] = {
 	{ "help",	no_argument,		NULL, 'h' },
 	{ "debug",	required_argument,	NULL, 'd' },
 	{ "port",	required_argument,	NULL, 'p' },
-	{ "ssl",	no_argument,		NULL, 's' },
+	{ "ssl-cert",	required_argument,	NULL, 'E' },
+	{ "ssl-key",	required_argument,	NULL, 'k' },
 	{ "interface",  required_argument,	NULL, 'i' },
 	{ "closetest",  no_argument,		NULL, 'c' },
 #ifndef LWS_NO_DAEMONIZE
@@ -271,7 +272,6 @@ static void cleanup()
 int main(int argc, char **argv)
 {
 	int n = 0;
-	int use_ssl = 0;
 	struct libwebsocket_context *context;
 	int opts = 0;
 	char interface_name[128] = "";
@@ -305,8 +305,11 @@ int main(int argc, char **argv)
 		case 'd':
 			debug_level = atoi(optarg);
 			break;
-		case 's':
-			use_ssl = 1;
+		case 'E':
+			info.ssl_cert_filepath = strdup(optarg);
+			break;
+		case 'k':
+			info.ssl_private_key_filepath = strdup(optarg);
 			break;
 		case 'p':
 			info.port = atoi(optarg);
@@ -322,7 +325,7 @@ int main(int argc, char **argv)
 			break;
 		case 'h':
 			fprintf(stderr, "Usage: jackwsserver "
-					"[--port=<p>] [--ssl] "
+					"[--port=<p>] [--ssl-cert FILEPATH] [--ssl-key FILEPATH] "
 					"[-d <log bitfield>] <port>+\n");
 			exit(1);
 		}
@@ -362,15 +365,6 @@ int main(int argc, char **argv)
 #ifndef LWS_NO_EXTENSIONS
 	info.extensions = libwebsocket_get_internal_extensions();
 #endif
-	if (!use_ssl) {
-		info.ssl_cert_filepath = NULL;
-		info.ssl_private_key_filepath = NULL;
-	} else {
-		/*
-		info.ssl_cert_filepath = LOCAL_RESOURCE_PATH"/libwebsockets-test-server.pem";
-		info.ssl_private_key_filepath = LOCAL_RESOURCE_PATH"/libwebsockets-test-server.key.pem";
-		*/
-	}
 	info.gid = -1;
 	info.uid = -1;
 	info.options = opts;
