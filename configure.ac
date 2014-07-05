@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([jackwsmeter], [0.5])
+AC_INIT([jackwsmeter], [1])
 AC_CONFIG_SRCDIR([jackwsmeter.c])
 AM_INIT_AUTOMAKE([1.11 -Wall foreign no-define tar-ustar no-dist-gzip dist-xz])
 AM_SILENT_RULES([yes])
