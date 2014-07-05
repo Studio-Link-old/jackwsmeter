@@ -1,4 +1,68 @@
 jackwsmeter - jack meter over websockets
 ========================================
 
+jackwsmeter get the signal values of the audio signals that flow through
+JACK ports and make the peak levels available over a websocket link,
+it's a clean and efficient way to get an overview of levels from a serie
+of jack servers.
 
+
+Installation
+------------
+
+JACK <http://jackaudio.org> and libwebsockets <http://libwebsockets.org>
+development files are required.
+
+Building and installing is done via the autotools:
+
+  ./autogen.sh
+  make
+  make install
+
+
+Usage
+-----
+
+Run the following command, then open your browser at http://localhost:7681.
+
+  jackwsmeter system:capture_1 system:capture_2
+
+It's also possible to specify invalid ports, in that case the corresponding
+number of jack input ports will be created but unconnected; the following
+command creates four input ports:
+
+  jackwsmeter x x x x
+
+(the limit is set at 20 input ports)
+
+
+Protocol
+--------
+
+jackwsmeter comes with a minimalistic HTML page but can be used in much better
+integration when using its WebSocket interface.
+
+The WebSocket protocol string is jack-wsmeter-protocol, it will periodically
+emit a message consisting of a string containing a space separated list of
+level values.
+
+  var ws = new WebSocket('ws://localhost:7681', 'jack-wsmeter-protocol');
+  ws.onmessage = function(event) {
+      var peaks = event.data.split(" ");
+      console.log('got ', peaks.length, ' measures:', event.data);
+  }
+
+
+Real world usage
+----------------
+
+jackwsmeter was developed to be used in Radio Panik, a free community radio in
+Brussels, Belgium. <http://www.radiopanik.org>
+
+
+Feedback
+--------
+
+You can send bug reports or any kind of comment to the author.
+
+  mailto:Frederic Peters <fpeters@0d.be>
