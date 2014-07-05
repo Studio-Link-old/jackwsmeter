@@ -162,7 +162,9 @@ callback_meter(struct libwebsocket_context *context,
 			snprintf(one_peak, 100, "%f ", db);
 			strcat((char*)p, one_peak);
 		}
-		n = strlen(p) + 1;
+		n = strlen(p);
+		p[n-1] = '\0'; /* remove trailing space */
+
 		n = libwebsocket_write(wsi, (unsigned char*)p, n, LWS_WRITE_TEXT);
 		if (n < 0) {
 			lwsl_err("ERROR %d writing to socket\n", n);

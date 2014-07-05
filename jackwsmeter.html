@@ -96,7 +96,7 @@ for (i=0; i<scale.children.length; i++) {
 
 var ws = new WebSocket(get_appropriate_ws_url(), 'jack-wsmeter-protocol');
 ws.onmessage = function(event) {
-	var peaks = event.data.split(" ").slice(0, -1);
+	var peaks = event.data.split(" ");
 	var gauges = document.getElementsByClassName('gauge');
 	var meters = document.getElementsByClassName('meter');
 	if (meters.length != peaks.length) {
