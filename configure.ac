@@ -13,6 +13,9 @@ PKG_CHECK_MODULES(WEBSOCKETS, libwebsockets)
 AC_CHECK_LIB(websockets, lws_daemonize, [true], [AC_DEFINE(LWS_NO_DAEMONIZE)])
 AC_CHECK_LIB(websockets, libwebsocket_get_internal_extensions, [true], [AC_DEFINE(LWS_NO_EXTENSIONS)])
 
+PKG_CHECK_EXISTS(libwebsockets >= 1.2, [AC_DEFINE(LWS_12)], [])
+PKG_CHECK_EXISTS(libwebsockets >= 1.3, [AC_DEFINE(LWS_13)], [])
+
 PKG_CHECK_MODULES(JACK, jack >= 0.100.0)
 AC_SUBST(JACK_CFLAGS)
 AC_SUBST(JACK_LIBS)

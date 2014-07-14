@@ -77,8 +77,12 @@ static int callback_http(struct libwebsocket_context *context,
 							   void *in, size_t len)
 {
 	int m;
-	int fd = (int)(long)user;
 	char *html_filepath;
+#ifdef LWS_13
+	struct libwebsocket_pollargs *pa = (struct libwebsocket_pollargs *)in;
+#else
+	int fd = (int)(long)user;
+#endif
 
 	switch (reason) {
 	case LWS_CALLBACK_HTTP:
@@ -89,7 +93,11 @@ static int callback_http(struct libwebsocket_context *context,
 			 * on the current directory. */
 			strcpy(html_filepath, "jackwsmeter.html");
 		}
+#ifdef LWS_13
+		if (libwebsockets_serve_http_file(context, wsi, html_filepath, "text/html", NULL)) {
+#else
 		if (libwebsockets_serve_http_file(context, wsi, html_filepath, "text/html")) {
+#endif
 			free(html_filepath);
 			return 1; /* through completion or error, close the socket */
 		}
@@ -107,21 +115,36 @@ static int callback_http(struct libwebsocket_context *context,
 			return 1;
 		}
 
+#ifdef LWS_13
+		fd_lookup[pa->fd] = count_pollfds;
+		pollfds[count_pollfds].fd = pa->fd;
+		pollfds[count_pollfds].events = pa->events;
+#else
 		fd_lookup[fd] = count_pollfds;
 		pollfds[count_pollfds].fd = fd;
 		pollfds[count_pollfds].events = (int)(long)len;
+#endif
 		pollfds[count_pollfds++].revents = 0;
 		break;
 
 	case LWS_CALLBACK_DEL_POLL_FD:
 		if (!--count_pollfds)
 			break;
+#ifdef LWS_13
+		m = fd_lookup[pa->fd];
+#else
 		m = fd_lookup[fd];
+#endif
 		/* have the last guy take up the vacant slot */
 		pollfds[m] = pollfds[count_pollfds];
 		fd_lookup[pollfds[count_pollfds].fd] = m;
 		break;
 
+#ifdef LWS_13
+	case LWS_CALLBACK_CHANGE_MODE_POLL_FD:
+	        pollfds[fd_lookup[pa->fd]].events = pa->events;
+		break;
+#else
 	case LWS_CALLBACK_SET_MODE_POLL_FD:
 		pollfds[fd_lookup[fd]].events |= (int)(long)len;
 		break;
@@ -129,6 +152,7 @@ static int callback_http(struct libwebsocket_context *context,
 	case LWS_CALLBACK_CLEAR_MODE_POLL_FD:
 		pollfds[fd_lookup[fd]].events &= ~(int)(long)len;
 		break;
+#endif
 
 	default:
 		break;
