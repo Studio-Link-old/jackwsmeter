@@ -3,6 +3,7 @@ Version 2 (unreleased)
 =========
 
  - Build and run against libwebsockets 1.3
+ - Add default port to HTML template (Guillaume Pellerin)
 
 =========
 Version 1 (2014-07-05)
